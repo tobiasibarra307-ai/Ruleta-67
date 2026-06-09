@@ -1,0 +1,530 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruleta Casino Completa - IAFAS</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background-color: #1a0f00;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        h1 {
+            margin-bottom: 15px;
+            color: #ffcc00;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
+            font-size: 24px;
+        }
+
+        .casino-table {
+            background: radial-gradient(circle, #0e5c2c 0%, #063618 100%);
+            border: 12px solid #5c2c16;
+            border-radius: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8), inset 0 0 50px rgba(0,0,0,0.5);
+            display: flex;
+            padding: 30px;
+            gap: 30px;
+            align-items: center;
+            max-width: 1300px;
+            width: 100%;
+        }
+
+        .wheel-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            flex-shrink: 0;
+        }
+
+        .roulette-wheel {
+            width: 260px;
+            height: 260px;
+            border-radius: 50%;
+            border: 10px solid #2e170b;
+            background: #000;
+            position: relative;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.6);
+            transition: transform 4s cubic-bezier(0.1, 0.8, 0.1, 1);
+        }
+
+        .wheel-inner {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(
+                #00b300 0deg 9.7deg, #ff3333 9.7deg 19.4deg, #333333 19.4deg 29.1deg,
+                #ff3333 29.1deg 38.8deg, #333333 38.8deg 48.5deg, #ff3333 48.5deg 58.2deg,
+                #333333 58.2deg 67.9deg, #ff3333 67.9deg 77.6deg, #333333 77.6deg 87.3deg,
+                #ff3333 87.3deg 97deg, #333333 97deg 106.7deg, #ff3333 106.7deg 116.4deg,
+                #333333 116.4deg 126.1deg, #ff3333 126.1deg 135.8deg, #333333 135.8deg 145.5deg,
+                #ff3333 145.5deg 155.2deg, #333333 155.2deg 164.9deg, #ff3333 164.9deg 174.6deg,
+                #333333 174.6deg 184.3deg, #00b300 184.3deg 194deg, #ff3333 194deg 203.7deg,
+                #333333 203.7deg 213.4deg, #ff3333 213.4deg 223.1deg, #333333 223.1deg 232.8deg,
+                #ff3333 232.8deg 242.5deg, #333333 242.5deg 252.2deg, #ff3333 252.2deg 261.9deg,
+                #333333 261.9deg 271.6deg, #ff3333 271.6deg 281.3deg, #333333 281.3deg 291deg,
+                #ff3333 291deg 300.7deg, #333333 300.7deg 310.4deg, #ff3333 310.4deg 320.1deg,
+                #333333 320.1deg 329.8deg, #ff3333 329.8deg 339.5deg, #333333 339.5deg 349.2deg,
+                #ff3333 349.2deg 360deg
+            );
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .wheel-center {
+            width: 130px;
+            height: 130px;
+            background: radial-gradient(circle, #e6e6e6 0%, #8c8c8c 100%);
+            border-radius: 50%;
+            border: 4px solid #404040;
+            position: relative;
+        }
+
+        .wheel-handle {
+            position: absolute;
+            width: 14px;
+            height: 110px;
+            background: #cccccc;
+            top: 10px;
+            left: 54px;
+            border-radius: 8px;
+        }
+        .wheel-handle::before {
+            content: '';
+            position: absolute;
+            width: 110px;
+            height: 14px;
+            background: #cccccc;
+            top: 48px;
+            left: -48px;
+            border-radius: 8px;
+        }
+
+        .ball {
+            width: 12px;
+            height: 12px;
+            background-color: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 20px;
+            left: 120px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.8);
+            z-index: 10;
+        }
+
+        /* Cambiamos la grilla para soportar las 12 columnas del casino real */
+        .betting-board {
+            display: grid;
+            grid-template-columns: 60px repeat(12, 50px);
+            grid-template-rows: repeat(3, 55px) 45px 45px;
+            gap: 3px;
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 10px;
+            border-radius: 10px;
+            border: 2px solid rgba(255,255,255,0.2);
+            overflow-x: auto;
+        }
+
+        .cell {
+            background-color: #0c4d24;
+            border: 1.5px solid white;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            position: relative;
+            transition: transform 0.1s;
+        }
+
+        .cell:hover {
+            transform: scale(1.05);
+            filter: brightness(1.2);
+            z-index: 5;
+        }
+
+        .cell.red { background-color: #d62525; }
+        .cell.black { background-color: #1c1c1c; }
+        .cell.green { background-color: #00aa00; }
+
+        .cell.zero-double { grid-column: 1; grid-row: 1; }
+        .cell.zero-single { grid-column: 1; grid-row: 2 / span 2; }
+        
+        /* Posiciones de las Docenas en la grilla */
+        .cell.chance-docena.d1 { grid-column: 2 / span 4; grid-row: 4; }
+        .cell.chance-docena.d2 { grid-column: 6 / span 4; grid-row: 4; }
+        .cell.chance-docena.d3 { grid-column: 10 / span 4; grid-row: 4; }
+
+        /* Posiciones de las Chances Inferiores */
+        .cell.chance-lowhigh.low { grid-column: 2 / span 3; grid-row: 5; }
+        .cell.chance-evenodd.even { grid-column: 5 / span 3; grid-row: 5; }
+        .cell.chance-evenodd.odd { grid-column: 8 / span 3; grid-row: 5; }
+        .cell.chance-lowhigh.high { grid-column: 11 / span 3; grid-row: 5; }
+
+        .chip-indicator {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: radial-gradient(circle, #ffffff 40%, #0077ff 45%, #0077ff 70%, #ffffff 75%);
+            border: 1.5px dashed white;
+            border-radius: 50%;
+            color: black;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .stats-panel {
+            width: 80px;
+            background-color: #0d1a12;
+            border: 3px solid #1f3a29;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px 5px;
+            height: 275px;
+        }
+        .stats-title {
+            font-size: 11px;
+            color: #8fa397;
+            margin-top: auto;
+            font-weight: bold;
+        }
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
+            align-items: center;
+        }
+        .history-item {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 13px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .controls-container {
+            margin-top: 25px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            width: 100%;
+            max-width: 1300px;
+            justify-content: space-between;
+            background-color: rgba(0,0,0,0.4);
+            padding: 15px 30px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .hud-info {
+            display: flex;
+            gap: 30px;
+            font-size: 18px;
+        }
+        .hud-info span strong { color: #ffcc00; }
+
+        .btn-group { display: flex; gap: 15px; }
+
+        .btn {
+            padding: 12px 25px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            transition: all 0.2s;
+            text-transform: uppercase;
+        }
+        .btn:active { transform: translateY(2px); }
+        .btn-clear { background: linear-gradient(to bottom, #4a5568, #2d3748); color: white; }
+        .btn-spin { background: linear-gradient(to bottom, #ff9900, #cc6600); color: white; font-size: 18px; padding: 12px 35px; }
+        .btn:disabled { background: #444 !important; color: #888; cursor: not-allowed; }
+
+        #status-message {
+            margin-top: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #4cd137;
+            height: 24px;
+            text-shadow: 1px 1px 2px black;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>RULETA COMPLETA CASINO</h1>
+
+    <div class="casino-table">
+        <div class="wheel-container">
+            <div class="roulette-wheel" id="wheel">
+                <div class="wheel-inner">
+                    <div class="wheel-center">
+                        <div class="wheel-handle"></div>
+                        <div class="ball" id="ball"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-panel">
+            <div class="history-list" id="history"></div>
+            <div class="stats-title">STATS</div>
+        </div>
+
+        <div class="betting-board">
+            <div class="cell green zero-double" onclick="placeBet('00')">00<div class="chip" id="chip-00"></div></div>
+            <div class="cell green zero-single" onclick="placeBet('0')">0<div class="chip" id="chip-0"></div></div>
+
+            <div class="cell red" onclick="placeBet('3')">3<div class="chip" id="chip-3"></div></div>
+            <div class="cell black" onclick="placeBet('6')">6<div class="chip" id="chip-6"></div></div>
+            <div class="cell red" onclick="placeBet('9')">9<div class="chip" id="chip-9"></div></div>
+            <div class="cell red" onclick="placeBet('12')">12<div class="chip" id="chip-12"></div></div>
+            <div class="cell black" onclick="placeBet('15')">15<div class="chip" id="chip-15"></div></div>
+            <div class="cell red" onclick="placeBet('18')">18<div class="chip" id="chip-18"></div></div>
+            <div class="cell red" onclick="placeBet('21')">21<div class="chip" id="chip-21"></div></div>
+            <div class="cell black" onclick="placeBet('24')">24<div class="chip" id="chip-24"></div></div>
+            <div class="cell red" onclick="placeBet('27')">27<div class="chip" id="chip-27"></div></div>
+            <div class="cell red" onclick="placeBet('30')">30<div class="chip" id="chip-30"></div></div>
+            <div class="cell black" onclick="placeBet('33')">33<div class="chip" id="chip-33"></div></div>
+            <div class="cell red" onclick="placeBet('36')">36<div class="chip" id="chip-36"></div></div>
+
+            <div class="cell black" onclick="placeBet('2')">2<div class="chip" id="chip-2"></div></div>
+            <div class="cell red" onclick="placeBet('5')">5<div class="chip" id="chip-5"></div></div>
+            <div class="cell black" onclick="placeBet('8')">8<div class="chip" id="chip-8"></div></div>
+            <div class="cell black" onclick="placeBet('11')">11<div class="chip" id="chip-11"></div></div>
+            <div class="cell red" onclick="placeBet('14')">14<div class="chip" id="chip-14"></div></div>
+            <div class="cell black" onclick="placeBet('17')">17<div class="chip" id="chip-17"></div></div>
+            <div class="cell black" onclick="placeBet('20')">20<div class="chip" id="chip-20"></div></div>
+            <div class="cell red" onclick="placeBet('23')">23<div class="chip" id="chip-23"></div></div>
+            <div class="cell black" onclick="placeBet('26')">26<div class="chip" id="chip-26"></div></div>
+            <div class="cell black" onclick="placeBet('29')">29<div class="chip" id="chip-29"></div></div>
+            <div class="cell red" onclick="placeBet('32')">32<div class="chip" id="chip-32"></div></div>
+            <div class="cell black" onclick="placeBet('35')">35<div class="chip" id="chip-35"></div></div>
+
+            <div class="cell red" onclick="placeBet('1')">1<div class="chip" id="chip-1"></div></div>
+            <div class="cell black" onclick="placeBet('4')">4<div class="chip" id="chip-4"></div></div>
+            <div class="cell red" onclick="placeBet('7')">7<div class="chip" id="chip-7"></div></div>
+            <div class="cell black" onclick="placeBet('10')">10<div class="chip" id="chip-10"></div></div>
+            <div class="cell black" onclick="placeBet('13')">13<div class="chip" id="chip-13"></div></div>
+            <div class="cell red" onclick="placeBet('16')">16<div class="chip" id="chip-16"></div></div>
+            <div class="cell red" onclick="placeBet('19')">19<div class="chip" id="chip-19"></div></div>
+            <div class="cell black" onclick="placeBet('22')">22<div class="chip" id="chip-22"></div></div>
+            <div class="cell red" onclick="placeBet('25')">25<div class="chip" id="chip-25"></div></div>
+            <div class="cell black" onclick="placeBet('28')">28<div class="chip" id="chip-28"></div></div>
+            <div class="cell black" onclick="placeBet('31')">31<div class="chip" id="chip-31"></div></div>
+            <div class="cell red" onclick="placeBet('34')">34<div class="chip" id="chip-34"></div></div>
+
+            <div class="cell chance-docena d1" onclick="placeBet('1st12')">1st 12 (1-12)<div class="chip" id="chip-1st12"></div></div>
+            <div class="cell chance-docena d2" onclick="placeBet('2nd12')">2nd 12 (13-24)<div class="chip" id="chip-2nd12"></div></div>
+            <div class="cell chance-docena d3" onclick="placeBet('3rd12')">3rd 12 (25-36)<div class="chip" id="chip-3rd12"></div></div>
+
+            <div class="cell chance-lowhigh low" onclick="placeBet('1-18')">1-18 (Menor)<div class="chip" id="chip-1-18"></div></div>
+            <div class="cell chance-evenodd even" onclick="placeBet('EVEN')">EVEN (Par)<div class="chip" id="chip-EVEN"></div></div>
+            <div class="cell chance-evenodd odd" onclick="placeBet('ODD')">ODD (Impar)<div class="chip" id="chip-ODD"></div></div>
+            <div class="cell chance-lowhigh high" onclick="placeBet('19-36')">19-36 (Mayor)<div class="chip" id="chip-19-36"></div></div>
+        </div>
+    </div>
+
+    <div id="status-message">¡Hagan sus apuestas!</div>
+
+    <div class="controls-container">
+        <div class="hud-info">
+            <span>Saldo: <strong id="balance-display">$1000</strong></span>
+            <span>Apuesta Total: <strong id="bet-display">$0</strong></span>
+        </div>
+        <div class="btn-group">
+            <button class="btn btn-clear" id="btn-clear" onclick="clearBets()">Clear</button>
+            <button class="btn btn-spin" id="btn-spin" onclick="spinWheel()">¡Girar!</button>
+        </div>
+    </div>
+
+    <script>
+        // Diccionario extendido con los 36 números reales del reglamento
+        const rouletteNumbers = {
+            "0": { color: "green", type: "zero" }, "00": { color: "green", type: "zero" },
+            "1": { color: "red", type: "odd" }, "2": { color: "black", type: "even" }, "3": { color: "red", type: "odd" },
+            "4": { color: "black", type: "even" }, "5": { color: "red", type: "odd" }, "6": { color: "black", type: "even" },
+            "7": { color: "red", type: "odd" }, "8": { color: "black", type: "even" }, "9": { color: "red", type: "odd" },
+            "10": { color: "black", type: "even" }, "11": { color: "black", type: "odd" }, "12": { color: "red", type: "even" },
+            "13": { color: "black", type: "odd" }, "14": { color: "red", type: "even" }, "15": { color: "black", type: "odd" },
+            "16": { color: "red", type: "even" }, "17": { color: "black", type: "odd" }, "18": { color: "red", type: "even" },
+            "19": { color: "red", type: "odd" }, "20": { color: "black", type: "even" }, "21": { color: "red", type: "odd" },
+            "22": { color: "black", type: "even" }, "23": { color: "red", type: "odd" }, "24": { color: "black", type: "even" },
+            "25": { color: "red", type: "odd" }, "26": { color: "black", type: "even" }, "27": { color: "red", type: "odd" },
+            "28": { color: "black", type: "even" }, "29": { color: "black", type: "odd" }, "30": { color: "red", type: "even" },
+            "31": { color: "black", type: "odd" }, "32": { color: "red", type: "even" }, "33": { color: "black", type: "odd" },
+            "34": { color: "red", type: "even" }, "35": { color: "black", type: "odd" }, "36": { color: "red", type: "even" }
+        };
+
+        const availableNumbers = Object.keys(rouletteNumbers);
+
+        let balance = 1000;
+        let currentBets = {}; 
+        const chipValue = 10; 
+        let isSpinning = false;
+
+        function placeBet(type) {
+            if (isSpinning) return;
+            if (balance < chipValue) {
+                document.getElementById('status-message').innerText = "¡Saldo insuficiente!";
+                return;
+            }
+            balance -= chipValue;
+            currentBets[type] = (currentBets[type] || 0) + chipValue;
+            updateHUD();
+            renderChips();
+            document.getElementById('status-message').innerText = "Apuesta añadida a: " + type;
+        }
+
+        function clearBets() {
+            if (isSpinning) return;
+            for (let type in currentBets) { balance += currentBets[type]; }
+            currentBets = {};
+            updateHUD();
+            renderChips();
+            document.getElementById('status-message').innerText = "Apuestas retiradas.";
+        }
+
+        function updateHUD() {
+            document.getElementById('balance-display').innerText = `$${balance}`;
+            let totalBet = Object.values(currentBets).reduce((a, b) => a + b, 0);
+            document.getElementById('bet-display').innerText = `$${totalBet}`;
+        }
+
+        function renderChips() {
+            document.querySelectorAll('.cell .chip').forEach(el => el.innerHTML = '');
+            for (let type in currentBets) {
+                const chipContainer = document.getElementById(`chip-${type}`);
+                if (chipContainer) {
+                    chipContainer.innerHTML = `<div class="chip-indicator">${currentBets[type]}</div>`;
+                }
+            }
+        }
+
+        function spinWheel() {
+            let totalBet = Object.values(currentBets).reduce((a, b) => a + b, 0);
+            if (totalBet === 0) {
+                document.getElementById('status-message').innerText = "Realice una apuesta primero.";
+                return;
+            }
+            if (isSpinning) return;
+
+            isSpinning = true;
+            document.getElementById('status-message').innerText = "¡No va más...!";
+            document.getElementById('btn-spin').disabled = true;
+            document.getElementById('btn-clear').disabled = true;
+
+            const winningNumber = availableNumbers[Math.floor(Math.random() * availableNumbers.length)];
+            const wheel = document.getElementById('wheel');
+            const ball = document.getElementById('ball');
+            
+            const randomExtraTurns = 4 + Math.floor(Math.random() * 4); 
+            const targetDegrees = (randomExtraTurns * 360) + Math.floor(Math.random() * 360);
+            
+            wheel.style.transform = "rotate(" + targetDegrees + "deg)";
+            ball.style.transform = "rotate(-" + (targetDegrees * 1.2) + "deg)";
+
+            setTimeout(() => {
+                evaluateResults(winningNumber);
+                isSpinning = false;
+                document.getElementById('btn-spin').disabled = false;
+                document.getElementById('btn-clear').disabled = false;
+                wheel.style.transition = 'none';
+                wheel.style.transform = 'rotate(0deg)';
+                ball.style.transform = 'rotate(0deg)';
+                setTimeout(() => {
+                    wheel.style.transition = 'transform 4s cubic-bezier(0.1, 0.8, 0.1, 1)';
+                }, 50);
+            }, 4000);
+        }
+
+        function evaluateResults(winningNumber) {
+            const numData = rouletteNumbers[winningNumber];
+            const numInt = parseInt(winningNumber);
+            let earnings = 0;
+
+            document.getElementById('status-message').innerText = "Ganador: ¡" + winningNumber + " " + numData.color.toUpperCase() + "!";
+
+            for (let betType in currentBets) {
+                let betAmount = currentBets[betType];
+
+                if (winningNumber === "0" || winningNumber === "00") {
+                    if (betType === winningNumber) {
+                        earnings += (betAmount * 35) + betAmount;
+                    }
+                } else {
+                    // 1. Plenos (Paga 35 a 1)
+                    if (betType === winningNumber) { earnings += (betAmount * 35) + betAmount; }
+                    
+                    // 2. Docenas (Paga 2 a 1)
+                    if (betType === "1st12" && numInt >= 1 && numInt <= 12) { earnings += (betAmount * 2) + betAmount; }
+                    if (betType === "2nd12" && numInt >= 13 && numInt <= 24) { earnings += (betAmount * 2) + betAmount; }
+                    if (betType === "3rd12" && numInt >= 25 && numInt <= 36) { earnings += (betAmount * 2) + betAmount; }
+                    
+                    // 3. Menor / Mayor (Paga 1 a 1)
+                    if (betType === "1-18" && numInt >= 1 && numInt <= 18) { earnings += (betAmount * 1) + betAmount; }
+                    if (betType === "19-36" && numInt >= 19 && numInt <= 36) { earnings += (betAmount * 1) + betAmount; }
+                    
+                    // 4. Pares / Impares (Paga 1 a 1)
+                    if (betType === "EVEN" && numData.type === "even") { earnings += (betAmount * 1) + betAmount; }
+                    if (betType === "ODD" && numData.type === "odd") { earnings += (betAmount * 1) + betAmount; }
+                }
+            }
+
+            balance += earnings;
+            if (earnings > 0) {
+                document.getElementById('status-message').innerText += " ¡Ganaste $" + earnings + "!";
+            } else {
+                document.getElementById('status-message').innerText += " Suerte para la próxima.";
+            }
+
+            currentBets = {};
+            updateHUD();
+            renderChips();
+            addHistory(winningNumber, numData.color);
+        }
+
+        function addHistory(number, color) {
+            const historyContainer = document.getElementById('history');
+            const item = document.createElement('div');
+            item.className = "history-item " + color;
+            item.innerText = number;
+
+            if (historyContainer.children.length >= 5) {
+                historyContainer.removeChild(historyContainer.lastChild);
+            }
+            historyContainer.insertBefore(item, historyContainer.firstChild);
+        }
+    </script>
+</body>
+</html>
