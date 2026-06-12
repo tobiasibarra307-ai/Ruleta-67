@@ -85,7 +85,6 @@
             border-radius: 50%;
         }
 
-        /* Segmentos de color de la rueda */
         .wheel-number-segment {
             position: absolute;
             width: 100%;
@@ -196,7 +195,6 @@
         .cell.color-bet-black { grid-column: 8 / span 2; grid-row: 5; background-color: #1c1c1c; color: white; font-size: 14px;}
         .cell.color-bet-green { grid-column: 1 / span 13; grid-row: 6; background-color: #00aa00; color: white; font-size: 15px; margin-top: 5px;}
 
-        /* Estilo visual de las fichas puestas en el tablero */
         .chip-indicator {
             position: absolute;
             width: 28px;
@@ -250,7 +248,6 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
 
-        /* Contenedor de selección de fichas */
         .chip-selector-container {
             margin-top: 15px;
             display: flex;
@@ -288,9 +285,9 @@
         .chip-50 { background: radial-gradient(circle, #fff 20%, #d62525 30%, #d62525 70%, #fff 80%); color: white; }
         .chip-100 { background: radial-gradient(circle, #fff 20%, #1c1c1c 30%, #1c1c1c 70%, #fff 80%); color: white; }
         
-        /* Ficha especial de 1000 con la imagen del muñeco */
+        /* CÓDIGO CORREGIDO: Apunta al nuevo archivo compatible con GitHub */
         .chip-1000 { 
-            background-image: url('tung tung.jfif'); 
+            background-image: url('tung-tung.jpg'); 
             background-size: cover; 
             background-position: center;
             color: #fff;
@@ -506,7 +503,6 @@
             "34": { color: "red", type: "even" }, "35": { color: "black", type: "odd" }, "36": { color: "red", type: "even" }
         };
 
-        // Renderizar los fondos de color en la ruleta
         const numbersLayer = document.getElementById('numbers-layer');
         const totalSegments = wheelOrder.length;
         const degPerSegment = 360 / totalSegments;
@@ -516,7 +512,7 @@
             segment.className = 'wheel-number-segment';
             segment.innerText = num;
             
-            let bgStyle = "#d62525"; // Red
+            let bgStyle = "#d62525"; 
             if (rouletteNumbers[num].color === "black") bgStyle = "#1c1c1c";
             if (rouletteNumbers[num].color === "green") bgStyle = "#00aa00";
             
@@ -525,9 +521,9 @@
             numbersLayer.appendChild(segment);
         });
 
-        let balance = 5000; // Subimos el saldo inicial para permitir apuestas de $1000 cómodamente
+        let balance = 5000; 
         let currentBets = {}; 
-        let activeChipValue = 10; // Valor por defecto
+        let activeChipValue = 10; 
         let isSpinning = false;
 
         function selectChipValue(value, element) {
@@ -681,7 +677,6 @@
             historyContainer.insertBefore(item, historyContainer.firstChild);
         }
         
-        // Inicializar indicadores en pantalla
         updateHUD();
     </script>
 </body>
