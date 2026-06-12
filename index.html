@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -40,7 +40,7 @@
             padding: 30px;
             gap: 30px;
             align-items: center;
-            max-width: 1300px;
+            max-width: 1350px;
             width: 100%;
         }
 
@@ -50,69 +50,84 @@
             align-items: center;
             gap: 20px;
             flex-shrink: 0;
+            position: relative;
+        }
+
+        .wheel-pointer {
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-top: 20px solid #ffcc00;
+            position: absolute;
+            top: -10px;
+            left: 135px;
+            z-index: 20;
+            filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.5));
         }
 
         .roulette-wheel {
-            width: 260px;
-            height: 260px;
+            width: 280px;
+            height: 280px;
             border-radius: 50%;
-            border: 10px solid #2e170b;
-            background: #000;
+            border: 12px solid #2e170b;
+            background: #111;
             position: relative;
             box-shadow: 0 10px 20px rgba(0,0,0,0.6);
+            overflow: hidden;
             transition: transform 4s cubic-bezier(0.1, 0.8, 0.1, 1);
         }
 
-        .wheel-inner {
+        .wheel-numbers-layer {
             width: 100%;
             height: 100%;
+            position: absolute;
             border-radius: 50%;
-            background: conic-gradient(
-                #00b300 0deg 9.7deg, #ff3333 9.7deg 19.4deg, #333333 19.4deg 29.1deg,
-                #ff3333 29.1deg 38.8deg, #333333 38.8deg 48.5deg, #ff3333 48.5deg 58.2deg,
-                #333333 58.2deg 67.9deg, #ff3333 67.9deg 77.6deg, #333333 77.6deg 87.3deg,
-                #ff3333 87.3deg 97deg, #333333 97deg 106.7deg, #ff3333 106.7deg 116.4deg,
-                #333333 116.4deg 126.1deg, #ff3333 126.1deg 135.8deg, #333333 135.8deg 145.5deg,
-                #ff3333 145.5deg 155.2deg, #333333 155.2deg 164.9deg, #ff3333 164.9deg 174.6deg,
-                #333333 174.6deg 184.3deg, #00b300 184.3deg 194deg, #ff3333 194deg 203.7deg,
-                #333333 203.7deg 213.4deg, #ff3333 213.4deg 223.1deg, #333333 223.1deg 232.8deg,
-                #ff3333 232.8deg 242.5deg, #333333 242.5deg 252.2deg, #ff3333 252.2deg 261.9deg,
-                #333333 261.9deg 271.6deg, #ff3333 271.6deg 281.3deg, #333333 281.3deg 291deg,
-                #ff3333 291deg 300.7deg, #333333 300.7deg 310.4deg, #ff3333 310.4deg 320.1deg,
-                #333333 320.1deg 329.8deg, #ff3333 329.8deg 339.5deg, #333333 339.5deg 349.2deg,
-                #ff3333 349.2deg 360deg
-            );
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        }
+
+        /* Segmentos de color de la rueda */
+        .wheel-number-segment {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            transform-origin: center center;
+            text-align: center;
+            font-weight: bold;
+            font-size: 12px;
+            color: white;
+            padding-top: 6px;
+            clip-path: polygon(50% 50%, 43.5% 0%, 56.5% 0%);
         }
 
         .wheel-center {
-            width: 130px;
-            height: 130px;
+            width: 140px;
+            height: 140px;
             background: radial-gradient(circle, #e6e6e6 0%, #8c8c8c 100%);
             border-radius: 50%;
             border: 4px solid #404040;
-            position: relative;
+            position: absolute;
+            top: 58px;
+            left: 58px;
+            z-index: 15;
         }
 
         .wheel-handle {
             position: absolute;
             width: 14px;
-            height: 110px;
+            height: 120px;
             background: #cccccc;
-            top: 10px;
-            left: 54px;
+            top: 6px;
+            left: 59px;
             border-radius: 8px;
         }
         .wheel-handle::before {
             content: '';
             position: absolute;
-            width: 110px;
+            width: 120px;
             height: 14px;
             background: #cccccc;
-            top: 48px;
-            left: -48px;
+            top: 53px;
+            left: -53px;
             border-radius: 8px;
         }
 
@@ -122,17 +137,17 @@
             background-color: white;
             border-radius: 50%;
             position: absolute;
-            top: 20px;
-            left: 120px;
+            top: 35px;
+            left: 124px;
             box-shadow: 0 0 5px rgba(0,0,0,0.8);
-            z-index: 10;
+            z-index: 18;
+            transform-origin: 16px 105px;
         }
 
-        /* Cambiamos la grilla para soportar las 12 columnas del casino real */
         .betting-board {
             display: grid;
             grid-template-columns: 60px repeat(12, 50px);
-            grid-template-rows: repeat(3, 55px) 45px 45px;
+            grid-template-rows: repeat(3, 55px) 45px 45px 50px;
             gap: 3px;
             background-color: rgba(0, 0, 0, 0.2);
             padding: 10px;
@@ -168,31 +183,35 @@
         .cell.zero-double { grid-column: 1; grid-row: 1; }
         .cell.zero-single { grid-column: 1; grid-row: 2 / span 2; }
         
-        /* Posiciones de las Docenas en la grilla */
         .cell.chance-docena.d1 { grid-column: 2 / span 4; grid-row: 4; }
         .cell.chance-docena.d2 { grid-column: 6 / span 4; grid-row: 4; }
         .cell.chance-docena.d3 { grid-column: 10 / span 4; grid-row: 4; }
 
-        /* Posiciones de las Chances Inferiores */
-        .cell.chance-lowhigh.low { grid-column: 2 / span 3; grid-row: 5; }
-        .cell.chance-evenodd.even { grid-column: 5 / span 3; grid-row: 5; }
-        .cell.chance-evenodd.odd { grid-column: 8 / span 3; grid-row: 5; }
-        .cell.chance-lowhigh.high { grid-column: 11 / span 3; grid-row: 5; }
+        .cell.chance-lowhigh.low { grid-column: 2 / span 2; grid-row: 5; }
+        .cell.chance-evenodd.even { grid-column: 4 / span 2; grid-row: 5; }
+        .cell.chance-evenodd.odd { grid-column: 10 / span 2; grid-row: 5; }
+        .cell.chance-lowhigh.high { grid-column: 12 / span 2; grid-row: 5; }
 
+        .cell.color-bet-red { grid-column: 6 / span 2; grid-row: 5; background-color: #d62525; color: white; font-size: 14px;}
+        .cell.color-bet-black { grid-column: 8 / span 2; grid-row: 5; background-color: #1c1c1c; color: white; font-size: 14px;}
+        .cell.color-bet-green { grid-column: 1 / span 13; grid-row: 6; background-color: #00aa00; color: white; font-size: 15px; margin-top: 5px;}
+
+        /* Estilo visual de las fichas puestas en el tablero */
         .chip-indicator {
             position: absolute;
-            width: 24px;
-            height: 24px;
-            background: radial-gradient(circle, #ffffff 40%, #0077ff 45%, #0077ff 70%, #ffffff 75%);
-            border: 1.5px dashed white;
+            width: 28px;
+            height: 28px;
+            background: radial-gradient(circle, #ffffff 30%, #ffcc00 35%, #ffcc00 70%, #ffffff 75%);
+            border: 1.5px dashed black;
             border-radius: 50%;
             color: black;
-            font-size: 10px;
+            font-size: 9px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 900;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.6);
+            z-index: 10;
         }
 
         .stats-panel {
@@ -204,7 +223,7 @@
             flex-direction: column;
             align-items: center;
             padding: 10px 5px;
-            height: 275px;
+            height: 280px;
         }
         .stats-title {
             font-size: 11px;
@@ -231,13 +250,62 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
 
+        /* Contenedor de selección de fichas */
+        .chip-selector-container {
+            margin-top: 15px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            background: rgba(0,0,0,0.3);
+            padding: 10px 20px;
+            border-radius: 50px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .chip-selection-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #ffcc00;
+        }
+        .selectable-chip {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 12px;
+            color: black;
+            cursor: pointer;
+            border: 3px dashed white;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.4);
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        .selectable-chip:hover { transform: scale(1.1); }
+        .selectable-chip.active { border: 4px solid #ffcc00; transform: scale(1.15); box-shadow: 0 0 12px #ffcc00;}
+        
+        .chip-10 { background: radial-gradient(circle, #fff 20%, #1e3c72 30%, #1e3c72 70%, #fff 80%); color: white; }
+        .chip-50 { background: radial-gradient(circle, #fff 20%, #d62525 30%, #d62525 70%, #fff 80%); color: white; }
+        .chip-100 { background: radial-gradient(circle, #fff 20%, #1c1c1c 30%, #1c1c1c 70%, #fff 80%); color: white; }
+        
+        /* Ficha especial de 1000 con la imagen del muñeco */
+        .chip-1000 { 
+            background-image: url('tung tung.jfif'); 
+            background-size: cover; 
+            background-position: center;
+            color: #fff;
+            text-shadow: 2px 2px 2px black, -2px -2px 2px black;
+            font-size: 14px;
+            border: 3px dashed #ffcc00;
+        }
+
         .controls-container {
-            margin-top: 25px;
+            margin-top: 15px;
             display: flex;
             gap: 20px;
             align-items: center;
             width: 100%;
-            max-width: 1300px;
+            max-width: 1350px;
             justify-content: space-between;
             background-color: rgba(0,0,0,0.4);
             padding: 15px 30px;
@@ -270,14 +338,38 @@
         .btn-spin { background: linear-gradient(to bottom, #ff9900, #cc6600); color: white; font-size: 18px; padding: 12px 35px; }
         .btn:disabled { background: #444 !important; color: #888; cursor: not-allowed; }
 
-        #status-message {
-            margin-top: 15px;
-            font-size: 18px;
-            font-weight: bold;
-            color: #4cd137;
-            height: 24px;
-            text-shadow: 1px 1px 2px black;
+        .win-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            opacity: 0;
+            transition: opacity 0.4s ease;
         }
+        .win-modal {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            border: 5px solid #ffcc00;
+            padding: 25px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            max-width: 500px;
+            width: 90%;
+            transform: scale(0.7);
+            transition: transform 0.4s ease;
+        }
+        .win-overlay.active { display: flex; opacity: 1; }
+        .win-overlay.active .win-modal { transform: scale(1); }
+        .win-title { color: #ffcc00; font-size: 26px; margin-bottom: 15px; text-shadow: 2px 2px 4px black; }
+        .win-image { width: 100%; max-height: 300px; object-fit: cover; border-radius: 10px; border: 3px solid white; margin-bottom: 20px; }
+        .btn-close-pop { background-color: #ffcc00; color: black; padding: 10px 25px; font-size: 16px; border-radius: 5px; font-weight: bold; cursor: pointer; border: none; }
+        .btn-close-pop:hover { background-color: white; }
     </style>
 </head>
 <body>
@@ -286,12 +378,12 @@
 
     <div class="casino-table">
         <div class="wheel-container">
+            <div class="wheel-pointer"></div>
             <div class="roulette-wheel" id="wheel">
-                <div class="wheel-inner">
-                    <div class="wheel-center">
-                        <div class="wheel-handle"></div>
-                        <div class="ball" id="ball"></div>
-                    </div>
+                <div class="wheel-numbers-layer" id="numbers-layer"></div>
+                <div class="wheel-center">
+                    <div class="wheel-handle"></div>
+                    <div class="ball" id="ball"></div>
                 </div>
             </div>
         </div>
@@ -348,11 +440,25 @@
             <div class="cell chance-docena d2" onclick="placeBet('2nd12')">2nd 12 (13-24)<div class="chip" id="chip-2nd12"></div></div>
             <div class="cell chance-docena d3" onclick="placeBet('3rd12')">3rd 12 (25-36)<div class="chip" id="chip-3rd12"></div></div>
 
-            <div class="cell chance-lowhigh low" onclick="placeBet('1-18')">1-18 (Menor)<div class="chip" id="chip-1-18"></div></div>
-            <div class="cell chance-evenodd even" onclick="placeBet('EVEN')">EVEN (Par)<div class="chip" id="chip-EVEN"></div></div>
-            <div class="cell chance-evenodd odd" onclick="placeBet('ODD')">ODD (Impar)<div class="chip" id="chip-ODD"></div></div>
-            <div class="cell chance-lowhigh high" onclick="placeBet('19-36')">19-36 (Mayor)<div class="chip" id="chip-19-36"></div></div>
+            <div class="cell chance-lowhigh low" onclick="placeBet('1-18')">1-18<div class="chip" id="chip-1-18"></div></div>
+            <div class="cell chance-evenodd even" onclick="placeBet('EVEN')">PAR<div class="chip" id="chip-EVEN"></div></div>
+            
+            <div class="cell color-bet-red" onclick="placeBet('COLOR_RED')">ROJO<div class="chip" id="chip-COLOR_RED"></div></div>
+            <div class="cell color-bet-black" onclick="placeBet('COLOR_BLACK')">NEGRO<div class="chip" id="chip-COLOR_BLACK"></div></div>
+            
+            <div class="cell chance-evenodd odd" onclick="placeBet('ODD')">IMPAR<div class="chip" id="chip-ODD"></div></div>
+            <div class="cell chance-lowhigh high" onclick="placeBet('19-36')">19-36<div class="chip" id="chip-19-36"></div></div>
+
+            <div class="cell color-bet-green" onclick="placeBet('COLOR_GREEN')">APOSTAR AL COLOR VERDE (0 y 00)<div class="chip" id="chip-COLOR_GREEN"></div></div>
         </div>
+    </div>
+
+    <div class="chip-selector-container">
+        <div class="chip-selection-title">FICHA:</div>
+        <div class="selectable-chip chip-10 active" onclick="selectChipValue(10, this)">10</div>
+        <div class="selectable-chip chip-50" onclick="selectChipValue(50, this)">50</div>
+        <div class="selectable-chip chip-100" onclick="selectChipValue(100, this)">100</div>
+        <div class="selectable-chip chip-1000" onclick="selectChipValue(1000, this)">1K</div>
     </div>
 
     <div id="status-message">¡Hagan sus apuestas!</div>
@@ -368,8 +474,22 @@
         </div>
     </div>
 
+    <div class="win-overlay" id="win-popup">
+        <div class="win-modal">
+            <div class="win-title" id="win-popup-title">¡Ganaste!</div>
+            <img src="1000203948.jpg" alt="Victoria" class="win-image">
+            <div>
+                <button class="btn-close-pop" onclick="closePopup()">Continuar jugando</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // Diccionario extendido con los 36 números reales del reglamento
+        const wheelOrder = [
+            "0", "28", "9", "26", "30", "11", "7", "20", "32", "17", "5", "22", "34", "15", "3", "24", "36", "13", "1",
+            "00", "27", "10", "25", "29", "12", "8", "19", "31", "18", "6", "21", "33", "16", "4", "23", "35", "14", "2"
+        ];
+
         const rouletteNumbers = {
             "0": { color: "green", type: "zero" }, "00": { color: "green", type: "zero" },
             "1": { color: "red", type: "odd" }, "2": { color: "black", type: "even" }, "3": { color: "red", type: "odd" },
@@ -386,24 +506,48 @@
             "34": { color: "red", type: "even" }, "35": { color: "black", type: "odd" }, "36": { color: "red", type: "even" }
         };
 
-        const availableNumbers = Object.keys(rouletteNumbers);
+        // Renderizar los fondos de color en la ruleta
+        const numbersLayer = document.getElementById('numbers-layer');
+        const totalSegments = wheelOrder.length;
+        const degPerSegment = 360 / totalSegments;
 
-        let balance = 1000;
+        wheelOrder.forEach((num, index) => {
+            const segment = document.createElement('div');
+            segment.className = 'wheel-number-segment';
+            segment.innerText = num;
+            
+            let bgStyle = "#d62525"; // Red
+            if (rouletteNumbers[num].color === "black") bgStyle = "#1c1c1c";
+            if (rouletteNumbers[num].color === "green") bgStyle = "#00aa00";
+            
+            segment.style.backgroundColor = bgStyle;
+            segment.style.transform = `rotate(${index * degPerSegment}deg)`;
+            numbersLayer.appendChild(segment);
+        });
+
+        let balance = 5000; // Subimos el saldo inicial para permitir apuestas de $1000 cómodamente
         let currentBets = {}; 
-        const chipValue = 10; 
+        let activeChipValue = 10; // Valor por defecto
         let isSpinning = false;
+
+        function selectChipValue(value, element) {
+            if (isSpinning) return;
+            activeChipValue = value;
+            document.querySelectorAll('.selectable-chip').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+        }
 
         function placeBet(type) {
             if (isSpinning) return;
-            if (balance < chipValue) {
-                document.getElementById('status-message').innerText = "¡Saldo insuficiente!";
+            if (balance < activeChipValue) {
+                document.getElementById('status-message').innerText = "¡Saldo insuficiente para esta ficha!";
                 return;
             }
-            balance -= chipValue;
-            currentBets[type] = (currentBets[type] || 0) + chipValue;
+            balance -= activeChipValue;
+            currentBets[type] = (currentBets[type] || 0) + activeChipValue;
             updateHUD();
             renderChips();
-            document.getElementById('status-message').innerText = "Apuesta añadida a: " + type;
+            document.getElementById('status-message').innerText = `Apuesta añadida a ${type} ($${activeChipValue})`;
         }
 
         function clearBets() {
@@ -426,7 +570,7 @@
             for (let type in currentBets) {
                 const chipContainer = document.getElementById(`chip-${type}`);
                 if (chipContainer) {
-                    chipContainer.innerHTML = `<div class="chip-indicator">${currentBets[type]}</div>`;
+                    chipContainer.innerHTML = `<div class="chip-indicator">$${currentBets[type]}</div>`;
                 }
             }
         }
@@ -444,27 +588,22 @@
             document.getElementById('btn-spin').disabled = true;
             document.getElementById('btn-clear').disabled = true;
 
-            const winningNumber = availableNumbers[Math.floor(Math.random() * availableNumbers.length)];
+            const winningIndex = Math.floor(Math.random() * wheelOrder.length);
+            const winningNumber = wheelOrder[winningIndex];
+
             const wheel = document.getElementById('wheel');
-            const ball = document.getElementById('ball');
+            const extraTurns = 6 + Math.floor(Math.random() * 3); 
+            const degreesPerItem = 360 / wheelOrder.length;
+            const targetDegrees = (extraTurns * 360) - (winningIndex * degreesPerItem);
             
-            const randomExtraTurns = 4 + Math.floor(Math.random() * 4); 
-            const targetDegrees = (randomExtraTurns * 360) + Math.floor(Math.random() * 360);
-            
+            wheel.style.transition = "transform 4s cubic-bezier(0.1, 0.8, 0.1, 1)";
             wheel.style.transform = "rotate(" + targetDegrees + "deg)";
-            ball.style.transform = "rotate(-" + (targetDegrees * 1.2) + "deg)";
 
             setTimeout(() => {
                 evaluateResults(winningNumber);
                 isSpinning = false;
                 document.getElementById('btn-spin').disabled = false;
                 document.getElementById('btn-clear').disabled = false;
-                wheel.style.transition = 'none';
-                wheel.style.transform = 'rotate(0deg)';
-                ball.style.transform = 'rotate(0deg)';
-                setTimeout(() => {
-                    wheel.style.transition = 'transform 4s cubic-bezier(0.1, 0.8, 0.1, 1)';
-                }, 50);
             }, 4000);
         }
 
@@ -473,29 +612,30 @@
             const numInt = parseInt(winningNumber);
             let earnings = 0;
 
-            document.getElementById('status-message').innerText = "Ganador: ¡" + winningNumber + " " + numData.color.toUpperCase() + "!";
+            const baseWinMsg = "Ganador: ¡" + winningNumber + " " + numData.color.toUpperCase() + "!";
+            document.getElementById('status-message').innerText = baseWinMsg;
 
             for (let betType in currentBets) {
                 let betAmount = currentBets[betType];
+
+                if (betType === "COLOR_RED" && numData.color === "red") { earnings += (betAmount * 1) + betAmount; }
+                if (betType === "COLOR_BLACK" && numData.color === "black") { earnings += (betAmount * 1) + betAmount; }
+                if (betType === "COLOR_GREEN" && numData.color === "green") { earnings += (betAmount * 17) + betAmount; }
 
                 if (winningNumber === "0" || winningNumber === "00") {
                     if (betType === winningNumber) {
                         earnings += (betAmount * 35) + betAmount;
                     }
                 } else {
-                    // 1. Plenos (Paga 35 a 1)
                     if (betType === winningNumber) { earnings += (betAmount * 35) + betAmount; }
                     
-                    // 2. Docenas (Paga 2 a 1)
                     if (betType === "1st12" && numInt >= 1 && numInt <= 12) { earnings += (betAmount * 2) + betAmount; }
                     if (betType === "2nd12" && numInt >= 13 && numInt <= 24) { earnings += (betAmount * 2) + betAmount; }
                     if (betType === "3rd12" && numInt >= 25 && numInt <= 36) { earnings += (betAmount * 2) + betAmount; }
                     
-                    // 3. Menor / Mayor (Paga 1 a 1)
                     if (betType === "1-18" && numInt >= 1 && numInt <= 18) { earnings += (betAmount * 1) + betAmount; }
                     if (betType === "19-36" && numInt >= 19 && numInt <= 36) { earnings += (betAmount * 1) + betAmount; }
                     
-                    // 4. Pares / Impares (Paga 1 a 1)
                     if (betType === "EVEN" && numData.type === "even") { earnings += (betAmount * 1) + betAmount; }
                     if (betType === "ODD" && numData.type === "odd") { earnings += (betAmount * 1) + betAmount; }
                 }
@@ -503,7 +643,9 @@
 
             balance += earnings;
             if (earnings > 0) {
-                document.getElementById('status-message').innerText += " ¡Ganaste $" + earnings + "!";
+                const finalWinText = baseWinMsg + " ¡Ganaste $" + earnings + "!";
+                document.getElementById('status-message').innerText = finalWinText;
+                showWinPopup(finalWinText);
             } else {
                 document.getElementById('status-message').innerText += " Suerte para la próxima.";
             }
@@ -512,6 +654,19 @@
             updateHUD();
             renderChips();
             addHistory(winningNumber, numData.color);
+        }
+
+        function showWinPopup(messageText) {
+            const popup = document.getElementById('win-popup');
+            document.getElementById('win-popup-title').innerText = messageText;
+            popup.style.display = 'flex';
+            setTimeout(() => { popup.classList.add('active'); }, 10);
+        }
+
+        function closePopup() {
+            const popup = document.getElementById('win-popup');
+            popup.classList.remove('active');
+            setTimeout(() => { popup.style.display = 'none'; }, 400);
         }
 
         function addHistory(number, color) {
@@ -525,6 +680,9 @@
             }
             historyContainer.insertBefore(item, historyContainer.firstChild);
         }
+        
+        // Inicializar indicadores en pantalla
+        updateHUD();
     </script>
 </body>
 </html>
